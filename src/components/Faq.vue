@@ -264,8 +264,9 @@
                 width: 24px
                 height: 24px
               svg
-                width: 17px
-                height: 17px
+                @media (max-width: 600px)
+                  width: 17px
+                  height: 17px
                 &:first-child
                   transition-duration: 0.4s
                   position: absolute

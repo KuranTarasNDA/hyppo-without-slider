@@ -171,7 +171,34 @@
       </div>
       <div class="offer-one__img">
         <div class="offer-one__img-wrapper">
+          <div id="content">
 
+            <h1><em style="text-transform:none; font-weight:700; font-size:1.3em; letter-spacing:-.025em;">
+              Signature to</em>
+              <strong class="url" style="letter-spacing:.025em;">PNG<span style="text-transform:none; letter-spacing:-.025em;"> data</span></strong></h1>
+
+            <p style="text-align:center;">Use your mouse cursor or the tip of your finger to sign below</p>
+            <form method="post" class="noprint" id="signature-form">
+              <div id="signature"></div>
+              <div>
+                <p style="text-align:center; margin-top:0em">
+                  <button id="reset" type="button">Reset</button>
+                </p>
+                <p>
+                  <label for="signature_capture">The data URI scheme</label>
+                  <textarea id="signature_capture" name="contractdata"></textarea>
+                </p>
+                <p id="help" class="hidden">
+                  <strong class="url">TIP:</strong>
+                  If you copy/paste this stuff in the browser
+                  address bar you'll see the file as an image.
+                  You can download that image using your browser's
+                  <i>Save as</i> function.
+                </p>
+              </div>
+            </form>
+
+          </div>
         </div>
         <div class="offer-one__img-bg"></div>
       </div>
@@ -461,7 +488,137 @@
         width: 100%
         z-index: 1
         height: calc(100% + 8px)
+.hidden
+  display: none
+  #content
+    text-align: left
+    max-width: 600px
+    margin: 2em auto
+    display: block
+    background: #fff
+    padding: 2em
+    border: 1px solid #e5e5e5
+    border-radius: 4px
+strong
+  font-weight: 700
+a, a .icon
+  color: #136fd2
+  color: #0a3666
+  color: #53777A
+  fill: #0a3666
+  color: #000
+  text-decoration: none
+  border-bottom: solid 1px transparent
+  transition: all 300ms
+a:hover,
+a:hover .icon
+  border-bottom: solid 1px #ccc
+  padding-bottom: 5px
+a
+  &:active
+    color: #bf7883
+    border-bottom: solid 1px #bf7883
+    padding-bottom: 0px
+.icon
+  fill: #222
+  width: 12px
+  height: 12px
+  margin: .075em .1em
+  margin-right: .2em
+h1
+  text-align: center
+  font-size: 2em
+  line-height: 1.5em
+  line-height: 1.2em
+  font-family: 'Arapey', serif
+  text-transform: uppercase
+  font-weight: normal
+  margin-top: 0
+  position: relative
+h2
+  font-size: 1.2em
+  line-height: 1.2em
+  letter-spacing: .05em
+  font-family: 'Open Sans Condensed',sans-serif
+  font-weight: 700
+label, #help
+  font-family: "Open Sans", sans-serif
+#signature
+  width: auto
+  box-shadow: 0 0 5px 1px #ddd inset
+  border: dashed 2px #53777A
+  border: dashed 1px #53777A
+  margin: 0
+  text-align: center
+  min-height: 80px
+  min-width: 340px
+  transition: .2s
+.big-red-button
+  border: none
+  outline: none
+  color: #fff
+  text-transform: uppercase
+  font-size: 1.5em
+  letter-spacing: .1rem
+  font-family: "Open Sans Condensed", sans-serif
+  font-weight: 300
+  width: 5rem
+  height: 4rem
+  line-height: 4rem
+  text-align: center
+  cursor: pointer
+  border-radius: 50%
+  background: #f74d4d
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f74d4d), color-stop(100%, #f86569))
+  background-image: -moz-gradient(linear, left top, left bottom, color-stop(0%, #f74d4d), color-stop(100%, #f86569))
+  box-shadow: 0 .4rem #e24f4f
+  &:active
+    box-shadow: 0 0 #e24f4f
+    transform: translate(0px, .4rem)
+    transition: 0.1s all ease-out
+#reset
+  margin: 1.5em auto
+#signature_capture
+  width: 100%
+  height: 7em
+.footer
+  text-align: right
+  display: block
+  margin-top: 0rem
+  max-width: 600px
+  margin: auto
+small
+  &.footer
+    font-family: "Open Sans", sans-serif
+.url
+  font-family: "Open Sans Condensed", sans-serif
+
 </style>
+<script>
+import $ from 'jquery'
+export default {
+  name: 'vue',
+  mounted: function () {
+    $('#signature').jSignature();
+    var $sigdiv = $('#signature');
+    var datapair = $sigdiv.jSignature('getData', 'svgbase64');
+
+    $('#signature').bind('change', function(e) {
+      var data = $('#signature').jSignature('getData');
+      $("#signature_capture").val(data);
+      $("#help").slideDown(300);
+    });
+
+    $('#reset').click(function(e){
+      $('#signature').jSignature('clear');
+      $("#signature_capture").val('');
+      //$("#help").slideUp(300);
+      e.preventDefault();
+    });
+
+  },
+}
+</script>
 
 
 
