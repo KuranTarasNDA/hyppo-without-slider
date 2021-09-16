@@ -98,18 +98,7 @@
             <div class="request__steps">
               <div class="details__diagram">
                 <div class="details__diagram-left">
-                  <div class="details__diagram-img">
-                    <svg width="233" height="275" viewBox="0 0 233 275" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M232.001 36.9523C216.091 22.4793 196.995 11.9183 176.242 6.11635C155.49 0.314441 133.66 -0.566817 112.504 3.54328C91.3476 7.65338 71.4538 16.6404 54.4185 29.7834C37.3831 42.9264 23.6804 59.8596 14.4096 79.2244C5.13883 98.5892 0.558026 119.847 1.03471 141.291C1.5114 162.736 7.0323 183.771 17.1545 202.709C27.2767 221.647 41.7184 237.961 59.3211 250.341C76.9238 262.722 97.1976 270.825 118.516 274L138.934 138.256L232.001 36.9523Z" fill="#2FF194" stroke="white"/>
-                    </svg>
-                    <svg width="176" height="140" viewBox="0 0 176 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M174.869 122.527C172.453 102.818 165.814 83.8618 155.407 66.9514C145 50.041 131.069 35.5747 114.564 24.5397C98.06 13.5046 79.3709 6.16058 59.7722 3.00857C40.1735 -0.143467 20.1265 0.970761 0.999187 6.27523L37.8923 139.308L174.869 122.527Z" fill="#598AD3" stroke="white"/>
-                    </svg>
-                    <svg width="160" height="155" viewBox="0 0 160 155" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M159.083 16.4796C159.083 11.0334 158.762 5.59195 158.123 0.183594L21.0293 16.4796H159.083Z" fill="#55DAFD"/>
-                      <path d="M0.591797 153.433C20.2299 156.382 40.271 155.046 59.3476 149.517C78.4241 143.988 96.0872 134.397 111.132 121.397C126.176 108.396 138.247 92.2939 146.522 74.1877C154.797 56.0814 159.081 36.3977 159.081 16.4795H21.0275L0.591797 153.433Z" fill="#55DAFD"/>
-                    </svg>
-                  </div>
+                  <PieChart class="details__diagram-left-img" :pieData="pieData" />
                   <div class="details__diagram-left-text">
                     <div class="detail__diagram-left-item">
                         <span>
@@ -1023,7 +1012,7 @@
                 min-width: 350px
                 width: 350px
                 margin-right: 0
-              .details__diagram-img
+              .details__diagram-left-img
                 position: absolute
                 top: 0
                 left: 66px
@@ -1519,3 +1508,23 @@
     h2
       display: none
 </style>
+<script>
+import PieChart from "../components/PieChart";
+export default {
+  data: () => {
+    return {
+      /*
+        Data for the pie chart, value is the percentage
+      */
+      pieData: [
+        { color: "#598AD3", value: 20 },
+        { color: "#55DAFD", value: 40 },
+        { color: "#2FF194", value: 40 }
+      ]
+    };
+  },
+  components: {
+    PieChart
+  }
+};
+</script>

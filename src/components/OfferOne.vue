@@ -171,45 +171,20 @@
       </div>
       <div class="offer-one__img">
         <div class="offer-one__img-wrapper">
-          <div id="content">
-
-            <h1><em style="text-transform:none; font-weight:700; font-size:1.3em; letter-spacing:-.025em;">
-              Signature to</em>
-              <strong class="url" style="letter-spacing:.025em;">PNG<span style="text-transform:none; letter-spacing:-.025em;"> data</span></strong></h1>
-
-            <p style="text-align:center;">Use your mouse cursor or the tip of your finger to sign below</p>
-            <form method="post" class="noprint" id="signature-form">
-              <div id="signature"></div>
-              <div>
-                <p style="text-align:center; margin-top:0em">
-                  <button id="reset" type="button">Reset</button>
-                </p>
-                <p>
-                  <label for="signature_capture">The data URI scheme</label>
-                  <textarea id="signature_capture" name="contractdata"></textarea>
-                </p>
-                <p id="help" class="hidden">
-                  <strong class="url">TIP:</strong>
-                  If you copy/paste this stuff in the browser
-                  address bar you'll see the file as an image.
-                  You can download that image using your browser's
-                  <i>Save as</i> function.
-                </p>
-              </div>
-            </form>
-
+          <div :style="{width:w,height:h}" @touchmove.prevent>
+            <canvas :id="uid" class="canvas" :data-uid="uid" :disabled="disabled"></canvas>
           </div>
         </div>
         <div class="offer-one__img-bg"></div>
       </div>
       <div class="offer-one__buttons">
-        <div class="btn">
+        <div @click="save" class="btn">
           <span>
             Accept
           </span>
           <div class="btn-bg"></div>
         </div>
-        <div class="btn">
+        <div @click="clear" class="btn">
           <span>
             Sign again
           </span>
@@ -439,13 +414,14 @@
       display: flex
       margin-right: auto
       width: 710px
-      height: 474px
+      height: 412px
       margin-bottom: 32px
       @media (max-width: 911px)
         margin-bottom: 15px
-        width: 100%
+        margin-left: -10px
+        border-radius: 0
       @media (max-width: 600px)
-        height: 250px
+        height: 412px
       .offer-one__img-wrapper
         position: relative
         z-index: 2
@@ -455,6 +431,12 @@
         height: 100%
         @media (max-width: 600px)
           border-radius: 12px
+        canvas
+          border-radius: 24px
+          width: 710px
+          height: 412px
+          @media (max-width: 911px)
+            border-radius: 0
       .offer-one__img-bg
         background: #0D1025
         opacity: 0.06
@@ -488,137 +470,174 @@
         width: 100%
         z-index: 1
         height: calc(100% + 8px)
-.hidden
-  display: none
-  #content
-    text-align: left
-    max-width: 600px
-    margin: 2em auto
-    display: block
-    background: #fff
-    padding: 2em
-    border: 1px solid #e5e5e5
-    border-radius: 4px
-strong
-  font-weight: 700
-a, a .icon
-  color: #136fd2
-  color: #0a3666
-  color: #53777A
-  fill: #0a3666
-  color: #000
-  text-decoration: none
-  border-bottom: solid 1px transparent
-  transition: all 300ms
-a:hover,
-a:hover .icon
-  border-bottom: solid 1px #ccc
-  padding-bottom: 5px
-a
-  &:active
-    color: #bf7883
-    border-bottom: solid 1px #bf7883
-    padding-bottom: 0px
-.icon
-  fill: #222
-  width: 12px
-  height: 12px
-  margin: .075em .1em
-  margin-right: .2em
-h1
-  text-align: center
-  font-size: 2em
-  line-height: 1.5em
-  line-height: 1.2em
-  font-family: 'Arapey', serif
-  text-transform: uppercase
-  font-weight: normal
-  margin-top: 0
-  position: relative
-h2
-  font-size: 1.2em
-  line-height: 1.2em
-  letter-spacing: .05em
-  font-family: 'Open Sans Condensed',sans-serif
-  font-weight: 700
-label, #help
-  font-family: "Open Sans", sans-serif
-#signature
-  width: auto
-  box-shadow: 0 0 5px 1px #ddd inset
-  border: dashed 2px #53777A
-  border: dashed 1px #53777A
-  margin: 0
-  text-align: center
-  min-height: 80px
-  min-width: 340px
-  transition: .2s
-.big-red-button
-  border: none
-  outline: none
-  color: #fff
-  text-transform: uppercase
-  font-size: 1.5em
-  letter-spacing: .1rem
-  font-family: "Open Sans Condensed", sans-serif
-  font-weight: 300
-  width: 5rem
-  height: 4rem
-  line-height: 4rem
-  text-align: center
-  cursor: pointer
-  border-radius: 50%
-  background: #f74d4d
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f74d4d), color-stop(100%, #f86569))
-  background-image: -moz-gradient(linear, left top, left bottom, color-stop(0%, #f74d4d), color-stop(100%, #f86569))
-  box-shadow: 0 .4rem #e24f4f
-  &:active
-    box-shadow: 0 0 #e24f4f
-    transform: translate(0px, .4rem)
-    transition: 0.1s all ease-out
-#reset
-  margin: 1.5em auto
-#signature_capture
-  width: 100%
-  height: 7em
-.footer
-  text-align: right
-  display: block
-  margin-top: 0rem
-  max-width: 600px
-  margin: auto
-small
-  &.footer
-    font-family: "Open Sans", sans-serif
-.url
-  font-family: "Open Sans Condensed", sans-serif
+
 
 </style>
 <script>
-import $ from 'jquery'
+import SignaturePad from 'signature_pad'
 export default {
-  name: 'vue',
-  mounted: function () {
-    $('#signature').jSignature();
-    var $sigdiv = $('#signature');
-    var datapair = $sigdiv.jSignature('getData', 'svgbase64');
-
-    $('#signature').bind('change', function(e) {
-      var data = $('#signature').jSignature('getData');
-      $("#signature_capture").val(data);
-      $("#help").slideDown(300);
-    });
-
-    $('#reset').click(function(e){
-      $('#signature').jSignature('clear');
-      $("#signature_capture").val('');
-      //$("#help").slideUp(300);
-      e.preventDefault();
-    });
-
+  name:"vue",
+  props:{
+    sigOption: {
+      type:Object,
+      default:()=>{
+        return {
+          backgroundColor:'rgb(255,255,255)',
+          penColor : 'rgb(0, 0, 0)'
+        }
+      },
+    },
+    w:{
+      type:String,
+      default:"710px"
+    },
+    h:{
+      type:String,
+      default:"412px"
+    },
+    clearOnResize:{
+      type:Boolean,
+      default:false
+    },
+    waterMark:{
+      type:Object,
+      default:()=>{
+        return {}
+      }
+    },
+    disabled:{
+      type:Boolean,
+      default:false
+    },
+    defaultUrl:{
+      type:String,
+      default:""
+    }
   },
+  data(){
+    return {
+      sig:()=>{},
+      option:{
+        backgroundColor:'rgb(255,255,255)',
+        penColor : 'rgb(0, 0, 0)'
+      },
+      uid:""
+    }
+  },
+  watch:{
+    disabled(val){
+      var _this = this
+      if (val) {
+        _this.sig.off()
+      } else {
+        _this.sig.on()
+      }
+    }
+  },
+  created(){
+    var _this = this;
+    this.uid = "canvas" + _this._uid
+    var sigOptions = Object.keys(_this.sigOption);
+    for(var item of sigOptions){
+      _this.option[item] = _this.sigOption[item]
+    }
+  },
+  methods:{
+    draw(){
+      var _this = this;
+      var canvas = document.getElementById(_this.uid)
+      _this.sig = new SignaturePad(canvas,_this.option);
+
+      function resizeCanvas(c) {
+        var url;
+        if(!_this.isEmpty()){
+          url = _this.save();
+        }
+        var ratio =  Math.max(window.devicePixelRatio || 1, 1);
+        c.width = _this.w.replace(/px|%/g,"") * ratio;
+        c.height = _this.h.replace(/px|%/g,"") * ratio;
+        c.getContext("2d").scale(ratio, ratio);
+        _this.clear();
+        !_this.clearOnResize && url !== undefined && _this.fromDataURL(url)
+        Object.keys(_this.waterMark).length && _this.addWaterMark(_this.waterMark)
+      }
+      window.addEventListener("resize", resizeCanvas(canvas));
+      resizeCanvas(canvas);
+      if (_this.defaultUrl !== ""){
+        _this.fromDataURL(_this.defaultUrl);
+      }
+      if (_this.disabled) {
+        _this.sig.off();
+      } else {
+        _this.sig.on();
+      }
+    },
+    clear(){
+      var _this = this;
+      _this.sig.clear();
+    },
+    save(format){
+      var _this = this;
+      return format ? _this.sig.toDataURL(format) :  _this.sig.toDataURL()
+      // signaturePad.toDataURL(); // save image as PNG
+      // signaturePad.toDataURL("image/jpeg"); // save image as JPEG
+      // signaturePad.toDataURL("image/svg+xml"); // save image as SVG
+    },
+    fromDataURL(url){
+      var _this = this;
+      _this.sig.fromDataURL(url)
+    },
+    isEmpty(){
+      var _this = this;
+      return _this.sig.isEmpty();
+    },
+    undo(){
+      var _this = this;
+      var data = _this.sig.toData();
+      if(data){
+        data.pop()
+        _this.sig.fromData(data);
+      }
+    },
+    addWaterMark(data){
+      var _this = this;
+      if(!(Object.prototype.toString.call(data) == '[object Object]')){
+        throw new Error("Expected Object, got "+typeof data+".")
+      }else{
+        var vCanvas = document.getElementById(_this.uid);
+        var textData = {
+          text:data.text || '',
+          x:data.x || 20,
+          y:data.y || 20,
+          sx:data.sx || 40,
+          sy:data.sy || 40
+        }
+
+        var ctx = vCanvas.getContext('2d');
+        ctx.font = data.font || '20px sans-serif';
+        ctx.fillStyle = data.fillStyle || "#333";
+        ctx.strokeStyle = data.strokeStyle || "#333";
+        if(data.style == 'all'){
+          ctx.fillText(textData.text,textData.x,textData.y);
+          ctx.strokeText(textData.text,textData.sx,textData.sx);
+        }else if(data.style == 'stroke'){
+          ctx.strokeText(textData.text,textData.sx,textData.sx);
+        }else{
+          ctx.fillText(textData.text,textData.x,textData.y);
+        }
+        _this.sig._isEmpty = false
+      }
+    }
+  },
+  mounted(){
+    var _this = this;
+    this.$nextTick().then(() => {
+      _this.draw()
+    });
+  }
 }
 </script>
+
 
 
 
